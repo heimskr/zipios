@@ -30,13 +30,17 @@
  * another place to live.
  */
 
+#if !defined(ZIPIOS_WINDOWS) && (defined(_WINDOWS) || defined(WIN32) || defined(_WIN32) || defined(__WIN32) || defined(__MINGW32__))
+#define ZIPIOS_WINDOWS
+#endif
+
 #include "zipios/zipios-config.hpp"
 
 #include <cstdint>
 #include <sstream>
 #include <vector>
 
-#if defined(ZIPIOS_WINDOWS)
+#if defined(ZIPIOS_WINDOWS) && !defined(__MINGW32__)
 typedef int32_t ssize_t;
 #endif
 
