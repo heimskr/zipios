@@ -34,28 +34,23 @@
 
 #include "ziplocalentry.hpp"
 
+namespace zipios {
 
-namespace zipios
-{
+	class ZipInputStreambuf : public InflateInputStreambuf {
+	public:
+		ZipInputStreambuf(std::streambuf *inbuf, offset_t start_pos = -1);
+		ZipInputStreambuf(ZipInputStreambuf const &src) = delete;
+		ZipInputStreambuf &operator=(ZipInputStreambuf const &rhs) = delete;
+		virtual ~ZipInputStreambuf() override;
 
+	protected:
+		virtual std::streambuf::int_type underflow() override;
 
-class ZipInputStreambuf : public InflateInputStreambuf
-{
-public:
-                            ZipInputStreambuf(std::streambuf * inbuf, offset_t start_pos = -1);
-                            ZipInputStreambuf(ZipInputStreambuf const & src) = delete;
-    ZipInputStreambuf &     operator = (ZipInputStreambuf const & rhs) = delete;
-    virtual                 ~ZipInputStreambuf() override;
-
-protected:
-    virtual std::streambuf::int_type    underflow() override;
-
-private:
-    ZipLocalEntry           m_current_entry = ZipLocalEntry();
-    offset_t                m_remain = 0;     // For STORED entry only. the number of bytes that
-                                              // has not been put in the m_outvec yet.
-};
-
+	private:
+		ZipLocalEntry m_current_entry = ZipLocalEntry();
+		offset_t m_remain = 0; // For STORED entry only. the number of bytes that
+							   // has not been put in the m_outvec yet.
+	};
 
 } // namespace
 

@@ -33,25 +33,20 @@
 
 #include "zipios_common.hpp"
 
+namespace zipios {
 
-namespace zipios
-{
+	class BackBuffer : public ::zipios::buffer_t {
+	public:
+		BackBuffer(std::istream &is, VirtualSeeker const &vs = VirtualSeeker(), ssize_t const chunk_size = 1024);
 
+		ssize_t readChunk(ssize_t &read_pointer);
 
-class BackBuffer : public ::zipios::buffer_t
-{
-public:
-                            BackBuffer(std::istream & is, VirtualSeeker const & vs = VirtualSeeker(), ssize_t const chunk_size = 1024);
-
-    ssize_t                 readChunk(ssize_t & read_pointer);
-
-private:
-    VirtualSeeker           m_vs = VirtualSeeker();
-    ssize_t                 m_chunk_size = 0;
-    std::istream &          m_is;
-    std::streampos          m_file_pos = 0;
-};
-
+	private:
+		VirtualSeeker m_vs = VirtualSeeker();
+		ssize_t m_chunk_size = 0;
+		std::istream &m_is;
+		std::streampos m_file_pos = 0;
+	};
 
 } // zipios namespace
 

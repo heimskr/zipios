@@ -32,34 +32,29 @@
 
 #include "zipios/filecollection.hpp"
 
+namespace zipios {
 
-namespace zipios
-{
+	class CollectionCollection : public FileCollection {
+	public:
+		explicit CollectionCollection();
+		CollectionCollection(CollectionCollection const &rhs);
+		virtual pointer_t clone() const override;
+		virtual ~CollectionCollection() override;
 
+		CollectionCollection &operator=(CollectionCollection const &rhs);
 
-class CollectionCollection : public FileCollection
-{
-public:
-    explicit                        CollectionCollection();
-                                    CollectionCollection(CollectionCollection const & rhs);
-    virtual pointer_t               clone() const override;
-    virtual                         ~CollectionCollection() override;
+		bool addCollection(FileCollection const &collection);
+		bool addCollection(FileCollection::pointer_t collection);
+		virtual void close() override;
+		virtual FileEntry::vector_t entries() const override;
+		virtual FileEntry::pointer_t getEntry(std::string const &name, MatchPath matchpath = MatchPath::MATCH) const override;
+		virtual stream_pointer_t getInputStream(std::string const &entry_name, MatchPath matchpath = MatchPath::MATCH) override;
+		virtual size_t size() const override;
+		virtual void mustBeValid() const;
 
-    CollectionCollection &          operator = (CollectionCollection const & rhs);
-
-    bool                            addCollection(FileCollection const & collection);
-    bool                            addCollection(FileCollection::pointer_t collection);
-    virtual void                    close() override;
-    virtual FileEntry::vector_t     entries() const override;
-    virtual FileEntry::pointer_t    getEntry(std::string const & name, MatchPath matchpath = MatchPath::MATCH) const override;
-    virtual stream_pointer_t        getInputStream(std::string const & entry_name, MatchPath matchpath = MatchPath::MATCH) override;
-    virtual size_t                  size() const override;
-    virtual void                    mustBeValid() const;
-
-protected:
-    vector_t                        m_collections;
-};
-
+	protected:
+		vector_t m_collections;
+	};
 
 } // zipios namespace
 

@@ -33,41 +33,36 @@
 
 #include "zipios/fileentry.hpp"
 
+namespace zipios {
 
-namespace zipios
-{
+	class ZipOutputStreambuf : public DeflateOutputStreambuf {
+	public:
+		ZipOutputStreambuf(std::streambuf *outbuf);
+		ZipOutputStreambuf(ZipOutputStreambuf const &rhs) = delete;
+		virtual ~ZipOutputStreambuf();
 
+		ZipOutputStreambuf &operator=(ZipOutputStreambuf const &rhs) = delete;
 
-class ZipOutputStreambuf : public DeflateOutputStreambuf
-{
-public:
-                                ZipOutputStreambuf(std::streambuf * outbuf);
-                                ZipOutputStreambuf(ZipOutputStreambuf const & rhs) = delete;
-    virtual                     ~ZipOutputStreambuf();
+		void closeEntry();
+		void close();
+		void finish();
+		void putNextEntry(FileEntry::pointer_t entry);
+		void setComment(std::string const &comment);
 
-    ZipOutputStreambuf &        operator = (ZipOutputStreambuf const & rhs) = delete;
+	protected:
+		virtual int overflow(int c = EOF) override;
+		virtual int sync() override;
 
-    void                        closeEntry();
-    void                        close();
-    void                        finish();
-    void                        putNextEntry(FileEntry::pointer_t entry);
-    void                        setComment(std::string const & comment);
+	private:
+		void setEntryClosedState();
+		void updateEntryHeaderInfo();
 
-protected:
-    virtual int                 overflow(int c = EOF) override;
-    virtual int                 sync() override;
-
-private:
-    void                        setEntryClosedState();
-    void                        updateEntryHeaderInfo();
-
-    std::string                 m_zip_comment = std::string();
-    FileEntry::vector_t         m_entries = FileEntry::vector_t();
-    FileEntry::CompressionLevel m_compression_level = FileEntry::COMPRESSION_LEVEL_DEFAULT;
-    bool                        m_open_entry = false;
-    bool                        m_open = true;
-};
-
+		std::string m_zip_comment = std::string();
+		FileEntry::vector_t m_entries = FileEntry::vector_t();
+		FileEntry::CompressionLevel m_compression_level = FileEntry::COMPRESSION_LEVEL_DEFAULT;
+		bool m_open_entry = false;
+		bool m_open = true;
+	};
 
 } // zipios namespace
 

@@ -34,42 +34,37 @@
 
 #include <time.h>
 
+namespace zipios {
 
-namespace zipios
-{
+	class DOSDateTime {
+	public:
+		typedef uint32_t dosdatetime_t;
 
+		static dosdatetime_t const g_min_dosdatetime = 0x00210000; // Jan  1, 1980  00:00:00
+		static dosdatetime_t const g_max_dosdatetime = 0xFF9FBF7D; // Dec 31, 2107  23:59:59
 
-class DOSDateTime
-{
-public:
-    typedef uint32_t            dosdatetime_t;
+		bool isValid() const;
+		int daysInMonth() const;
+		int getSecond() const;
+		int getMinute() const;
+		int getHour() const;
+		int getMDay() const;
+		int getMonth() const;
+		int getYear() const;
+		void setSecond(int second);
+		void setMinute(int minute);
+		void setHour(int hour);
+		void setMDay(int mday);
+		void setMonth(int month);
+		void setYear(int year);
+		dosdatetime_t getDOSDateTime() const;
+		void setDOSDateTime(dosdatetime_t datetime);
+		void setUnixTimestamp(std::time_t unix_timestamp);
+		std::time_t getUnixTimestamp() const;
 
-    static dosdatetime_t const  g_min_dosdatetime = 0x00210000;     // Jan  1, 1980  00:00:00
-    static dosdatetime_t const  g_max_dosdatetime = 0xFF9FBF7D;     // Dec 31, 2107  23:59:59
-
-    bool                        isValid() const;
-    int                         daysInMonth() const;
-    int                         getSecond() const;
-    int                         getMinute() const;
-    int                         getHour() const;
-    int                         getMDay() const;
-    int                         getMonth() const;
-    int                         getYear() const;
-    void                        setSecond(int second);
-    void                        setMinute(int minute);
-    void                        setHour(int hour);
-    void                        setMDay(int mday);
-    void                        setMonth(int month);
-    void                        setYear(int year);
-    dosdatetime_t               getDOSDateTime() const;
-    void                        setDOSDateTime(dosdatetime_t datetime);
-    void                        setUnixTimestamp(std::time_t unix_timestamp);
-    std::time_t                 getUnixTimestamp() const;
-
-protected:
-    dosdatetime_t               m_dosdatetime = 0;
-};
-
+	protected:
+		dosdatetime_t m_dosdatetime = 0;
+	};
 
 } // zipios namespace
 

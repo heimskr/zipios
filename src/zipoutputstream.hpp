@@ -32,28 +32,24 @@
 
 #include "zipoutputstreambuf.hpp"
 
+namespace zipios {
 
-namespace zipios
-{
+	class ZipOutputStreambuf;
 
-class ZipOutputStreambuf;
+	class ZipOutputStream : public std::ostream {
+	public:
+		ZipOutputStream(std::ostream &os);
+		virtual ~ZipOutputStream();
 
-class ZipOutputStream : public std::ostream
-{
-public:
-                    ZipOutputStream(std::ostream & os);
-    virtual         ~ZipOutputStream();
+		void closeEntry();
+		void close();
+		void finish();
+		void putNextEntry(FileEntry::pointer_t entry);
+		void setComment(std::string const &comment);
 
-    void            closeEntry();
-    void            close();
-    void            finish();
-    void            putNextEntry(FileEntry::pointer_t entry);
-    void            setComment(std::string const & comment);
-
-private:
-    std::unique_ptr<ZipOutputStreambuf> m_ozf = std::unique_ptr<ZipOutputStreambuf>();
-};
-
+	private:
+		std::unique_ptr<ZipOutputStreambuf> m_ozf = std::unique_ptr<ZipOutputStreambuf>();
+	};
 
 } // zipios namespace
 

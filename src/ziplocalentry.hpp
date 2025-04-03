@@ -34,41 +34,36 @@
 
 #include "zipios/fileentry.hpp"
 
+namespace zipios {
 
-namespace zipios
-{
+	class ZipLocalEntry : public FileEntry {
+	public:
+		// Zip file format version
+		static uint16_t const g_zip_format_version = 20; // 2.0
 
+		ZipLocalEntry();
+		ZipLocalEntry(FileEntry const &src);
+		virtual pointer_t clone() const override;
+		virtual ~ZipLocalEntry() override;
 
-class ZipLocalEntry : public FileEntry
-{
-public:
-    // Zip file format version
-    static uint16_t const       g_zip_format_version = 20; // 2.0
+		virtual size_t getCompressedSize() const override;
+		virtual size_t getHeaderSize() const override;
+		virtual bool isDirectory() const override;
+		virtual bool isEqual(FileEntry const &file_entry) const override;
+		virtual void setCompressedSize(size_t size) override;
+		virtual void setCrc(crc32_t crc) override;
 
-                                ZipLocalEntry();
-                                ZipLocalEntry(FileEntry const & src);
-    virtual pointer_t           clone() const override;
-    virtual                     ~ZipLocalEntry() override;
+		bool hasTrailingDataDescriptor() const;
 
-    virtual size_t              getCompressedSize() const override;
-    virtual size_t              getHeaderSize() const override;
-    virtual bool                isDirectory() const override;
-    virtual bool                isEqual(FileEntry const & file_entry) const override;
-    virtual void                setCompressedSize(size_t size) override;
-    virtual void                setCrc(crc32_t crc) override;
+		virtual void read(std::istream &is) override;
+		virtual void write(std::ostream &os) override;
 
-    bool                        hasTrailingDataDescriptor() const;
-
-    virtual void                read(std::istream & is) override;
-    virtual void                write(std::ostream & os) override;
-
-protected:
-    uint16_t                    m_extract_version = g_zip_format_version;
-    uint16_t                    m_general_purpose_bitfield = 0;
-    bool                        m_is_directory = false;
-    size_t                      m_compressed_size = 0;
-};
-
+	protected:
+		uint16_t m_extract_version = g_zip_format_version;
+		uint16_t m_general_purpose_bitfield = 0;
+		bool m_is_directory = false;
+		size_t m_compressed_size = 0;
+	};
 
 } // zipios namespace
 

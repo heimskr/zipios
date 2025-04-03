@@ -39,60 +39,50 @@
 
 #include <stdio.h>
 
+#define ZIPIOS_VERSION_MAJOR @ZIPIOS_VERSION_MAJOR @
+#define ZIPIOS_VERSION_MINOR @ZIPIOS_VERSION_MINOR @
+#define ZIPIOS_VERSION_PATCH @ZIPIOS_VERSION_PATCH @
+#define ZIPIOS_VERSION_STRING "@ZIPIOS_VERSION_MAJOR@.@ZIPIOS_VERSION_MINOR@.@ZIPIOS_VERSION_PATCH@"
 
-#define    ZIPIOS_VERSION_MAJOR   @ZIPIOS_VERSION_MAJOR@
-#define    ZIPIOS_VERSION_MINOR   @ZIPIOS_VERSION_MINOR@
-#define    ZIPIOS_VERSION_PATCH   @ZIPIOS_VERSION_PATCH@
-#define    ZIPIOS_VERSION_STRING  "@ZIPIOS_VERSION_MAJOR@.@ZIPIOS_VERSION_MINOR@.@ZIPIOS_VERSION_PATCH@"
+namespace zipios {
 
+	inline char const *getVersion() {
+		return ZIPIOS_VERSION_STRING;
+	}
 
-namespace zipios
-{
+	typedef std::streamoff offset_t;
 
-
-inline char const * getVersion()
-{
-    return ZIPIOS_VERSION_STRING;
-}
-
-
-typedef std::streamoff      offset_t;
-
-
-inline size_t getBufferSize()
-{
-    return BUFSIZ;
-}
-
+	inline size_t getBufferSize() {
+		return BUFSIZ;
+	}
 
 } // zipios namespace
-
 
 // Visual C++
 #ifdef _MSC_VER
 
 // Disable class-browser warning about truncated template-names
 // Still needed? TBD
-//#pragma warning( disable : 4786 )
+// #pragma warning( disable : 4786 )
 
 #endif //_MSC_VER
 
 #ifdef WIN32
 
 // Needed for FilePath
-#define S_ISREG(mode)   (((mode) & _S_IFREG) == _S_IFREG)
-#define S_ISDIR(mode)   (((mode) & _S_IFDIR) == _S_IFDIR)
-#define S_ISCHR(mode)   (((mode) & _S_IFCHR) == _S_IFCHR)
-#define S_ISBLK(mode)   0
-#define S_ISSOCK(mode)  0
-#define S_ISFIFO(mode)  (((mode) & _S_IFIFO) == _S_IFIFO)
+#define S_ISREG(mode) (((mode) & _S_IFREG) == _S_IFREG)
+#define S_ISDIR(mode) (((mode) & _S_IFDIR) == _S_IFDIR)
+#define S_ISCHR(mode) (((mode) & _S_IFCHR) == _S_IFCHR)
+#define S_ISBLK(mode) 0
+#define S_ISSOCK(mode) 0
+#define S_ISFIFO(mode) (((mode) & _S_IFIFO) == _S_IFIFO)
 
 // todo: change to _stat64 or whatever is required to get full 64 bit support
-typedef struct stat     os_stat_t;
+typedef struct stat os_stat_t;
 
 #else
 
-typedef struct stat     os_stat_t;
+typedef struct stat os_stat_t;
 
 #endif
 

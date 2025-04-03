@@ -29,51 +29,42 @@
 
 #include "zipios/zipiosexceptions.hpp"
 
+namespace zipios {
 
-namespace zipios
-{
+	/** \class FilterInputStreambuf
+	 * \brief A base class to develop input stream filters.
+	 *
+	 * An input stream buffer filter is an std::streambuf that filters the
+	 * input it gets from the std::streambuf it is attached to.
+	 *
+	 * zipios::FilterInputStreambuf is a base class to derive input streambuf
+	 * filters from.
+	 */
 
-/** \class FilterInputStreambuf
- * \brief A base class to develop input stream filters.
- *
- * An input stream buffer filter is an std::streambuf that filters the
- * input it gets from the std::streambuf it is attached to.
- *
- * zipios::FilterInputStreambuf is a base class to derive input streambuf
- * filters from.
- */
+	/** \brief Initialize a filter input stream buffer.
+	 *
+	 * This constructor initializes the FilterInputStreambuf by saving
+	 * the inbuf pointer in this class.
+	 *
+	 * \param[in] inbuf  The streambuf to use for input.
+	 */
+	FilterInputStreambuf::FilterInputStreambuf(std::streambuf *inbuf) : m_inbuf(inbuf) {
+		if (m_inbuf == nullptr) {
+			throw InvalidStateException("FilterInputStreambuf::FilterInputStreambuf() was called with a null streambuf pointer");
+		}
+	}
 
-
-/** \brief Initialize a filter input stream buffer.
- *
- * This constructor initializes the FilterInputStreambuf by saving
- * the inbuf pointer in this class.
- *
- * \param[in] inbuf  The streambuf to use for input.
- */
-FilterInputStreambuf::FilterInputStreambuf(std::streambuf * inbuf)
-    : m_inbuf(inbuf)
-{
-    if(m_inbuf == nullptr)
-    {
-        throw InvalidStateException("FilterInputStreambuf::FilterInputStreambuf() was called with a null streambuf pointer");
-    }
-}
-
-
-/** \brief Clean up the object.
- *
- * At this time the destructor does nothing.
- *
- * \note
- * The former version would eventually delete the m_inbuf pointer. However,
- * here we have decided that this class did not own that pointer and thus
- * should not have such permissions.
- */
-FilterInputStreambuf::~FilterInputStreambuf()
-{
-}
-
+	/** \brief Clean up the object.
+	 *
+	 * At this time the destructor does nothing.
+	 *
+	 * \note
+	 * The former version would eventually delete the m_inbuf pointer. However,
+	 * here we have decided that this class did not own that pointer and thus
+	 * should not have such permissions.
+	 */
+	FilterInputStreambuf::~FilterInputStreambuf() {
+	}
 
 } // namespace
 

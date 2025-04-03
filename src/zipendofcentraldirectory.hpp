@@ -37,34 +37,29 @@
 
 #include <string>
 
+namespace zipios {
 
-namespace zipios
-{
+	class ZipEndOfCentralDirectory {
+	public:
+		ZipEndOfCentralDirectory(std::string const &zip_comment = std::string());
 
+		size_t getCentralDirectorySize() const;
+		size_t getCount() const;
+		offset_t getOffset() const;
+		void setCentralDirectorySize(size_t size);
+		void setCount(size_t c);
+		void setOffset(offset_t new_offset);
 
-class ZipEndOfCentralDirectory
-{
-public:
-                        ZipEndOfCentralDirectory(std::string const & zip_comment = std::string());
+		bool read(::zipios::buffer_t const &buf, size_t pos);
+		void write(std::ostream &os);
 
-    size_t              getCentralDirectorySize() const;
-    size_t              getCount() const;
-    offset_t            getOffset() const;
-    void                setCentralDirectorySize(size_t size);
-    void                setCount(size_t c);
-    void                setOffset(offset_t new_offset);
-
-    bool                read(::zipios::buffer_t const & buf, size_t pos);
-    void                write(std::ostream & os);
-
-private:
-    // some of the fields found in a Zip archive ZipEndOfCentralDirectory
-    size_t              m_central_directory_entries = 0;
-    size_t              m_central_directory_size = 0;
-    offset_t            m_central_directory_offset = 0;
-    std::string         m_zip_comment = std::string();
-};
-
+	private:
+		// some of the fields found in a Zip archive ZipEndOfCentralDirectory
+		size_t m_central_directory_entries = 0;
+		size_t m_central_directory_size = 0;
+		offset_t m_central_directory_offset = 0;
+		std::string m_zip_comment = std::string();
+	};
 
 } // zipios namespace
 

@@ -29,24 +29,19 @@
 
 #include <iostream>
 
+namespace zipios {
 
-namespace zipios
-{
+	class FilterInputStreambuf : public std::streambuf {
+	public:
+		FilterInputStreambuf(std::streambuf *inbuf);
+		FilterInputStreambuf(FilterInputStreambuf const &rhs) = delete;
+		virtual ~FilterInputStreambuf();
 
+		FilterInputStreambuf &operator=(FilterInputStreambuf const &rhs) = delete;
 
-class FilterInputStreambuf : public std::streambuf
-{
-public:
-                                FilterInputStreambuf(std::streambuf * inbuf);
-                                FilterInputStreambuf(FilterInputStreambuf const & rhs) = delete;
-    virtual                     ~FilterInputStreambuf();
-
-    FilterInputStreambuf &      operator = (FilterInputStreambuf const & rhs) = delete;
-
-protected:
-    std::streambuf *            m_inbuf = nullptr;
-};
-
+	protected:
+		std::streambuf *m_inbuf = nullptr;
+	};
 
 } // zipios namespace
 

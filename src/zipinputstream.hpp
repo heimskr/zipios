@@ -34,28 +34,22 @@
 
 #include "zipinputstreambuf.hpp"
 
+namespace zipios {
 
-namespace zipios
-{
+	class ZipInputStream : public std::istream {
+	public:
+		ZipInputStream(std::string const &filename, std::streampos pos = 0);
+		ZipInputStream(std::istream &is, std::streampos pos = 0);
+		ZipInputStream(ZipInputStream const &rhs) = delete;
+		virtual ~ZipInputStream() override;
 
+		ZipInputStream &operator=(ZipInputStream const &rhs) = delete;
 
-
-class ZipInputStream : public std::istream
-{
-public:
-                                        ZipInputStream(std::string const & filename, std::streampos pos = 0);
-                                        ZipInputStream(std::istream & is, std::streampos pos = 0);
-                                        ZipInputStream(ZipInputStream const & rhs) = delete;
-    virtual                             ~ZipInputStream() override;
-
-    ZipInputStream &                    operator = (ZipInputStream const & rhs) = delete;
-
-private:
-    std::unique_ptr<std::istream>       m_ifs = std::unique_ptr<std::istream>();
-    std::istream &                      m_ifs_ref;
-    std::unique_ptr<ZipInputStreambuf>  m_izf = std::unique_ptr<ZipInputStreambuf>();
-};
-
+	private:
+		std::unique_ptr<std::istream> m_ifs = std::unique_ptr<std::istream>();
+		std::istream &m_ifs_ref;
+		std::unique_ptr<ZipInputStreambuf> m_izf = std::unique_ptr<ZipInputStreambuf>();
+	};
 
 } // zipios namespace
 

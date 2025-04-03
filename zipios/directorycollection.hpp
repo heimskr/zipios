@@ -30,38 +30,31 @@
  * of files as found in a directory on disk.
  */
 
-#include "zipios/filecollection.hpp"
 #include "zipios/directoryentry.hpp"
+#include "zipios/filecollection.hpp"
 
+namespace zipios {
 
-namespace zipios
-{
+	class DirectoryCollection : public FileCollection {
+	public:
+		DirectoryCollection();
+		DirectoryCollection(std::string const &path, bool recursive = true);
+		virtual pointer_t clone() const override;
+		virtual ~DirectoryCollection() override;
 
+		virtual void close() override;
+		virtual FileEntry::vector_t entries() const override;
+		virtual FileEntry::pointer_t getEntry(std::string const &name, MatchPath matchpath = MatchPath::MATCH) const override;
+		virtual stream_pointer_t getInputStream(std::string const &entry_name, MatchPath matchpath = MatchPath::MATCH) override;
 
-class DirectoryCollection : public FileCollection
-{
-public:
-                                    DirectoryCollection();
-                                    DirectoryCollection(
-                                              std::string const & path
-                                            , bool recursive = true);
-    virtual pointer_t               clone() const override;
-    virtual                         ~DirectoryCollection() override;
+	protected:
+		void loadEntries() const;
+		void load(FilePath const &subdir);
 
-    virtual void                    close() override;
-    virtual FileEntry::vector_t     entries() const override;
-    virtual FileEntry::pointer_t    getEntry(std::string const & name, MatchPath matchpath = MatchPath::MATCH) const override;
-    virtual stream_pointer_t        getInputStream(std::string const & entry_name, MatchPath matchpath = MatchPath::MATCH) override;
-
-protected:
-    void                            loadEntries() const;
-    void                            load(FilePath const & subdir);
-
-    mutable bool                    m_entries_loaded = false;
-    bool                            m_recursive = true;
-    FilePath                        m_filepath;
-};
-
+		mutable bool m_entries_loaded = false;
+		bool m_recursive = true;
+		FilePath m_filepath;
+	};
 
 } // zipios namespace
 

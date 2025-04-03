@@ -34,31 +34,23 @@
 
 #include "zipios/fileentry.hpp"
 
+namespace zipios {
 
-namespace zipios
-{
+	class StreamEntry : public FileEntry {
+	public:
+		typedef std::shared_ptr<StreamEntry> pointer_t;
 
+		StreamEntry(std::istream &is, FilePath const &filename, std::string const &comment = std::string());
+		virtual FileEntry::pointer_t clone() const override;
+		virtual ~StreamEntry() override;
 
-class StreamEntry : public FileEntry
-{
-public:
-    typedef std::shared_ptr<StreamEntry>        pointer_t;
+		virtual bool isEqual(FileEntry const &file_entry) const override;
+		uint32_t computeCRC32() const;
+		std::istream &getStream() const;
 
-                                    StreamEntry(
-                                              std::istream & is
-                                            , FilePath const & filename
-                                            , std::string const & comment = std::string());
-    virtual FileEntry::pointer_t    clone() const override;
-    virtual                         ~StreamEntry() override;
-
-    virtual bool                    isEqual(FileEntry const & file_entry) const override;
-    uint32_t                        computeCRC32() const;
-    std::istream &                  getStream() const;
-
-private:
-    std::istream &                  f_istream;
-};
-
+	private:
+		std::istream &f_istream;
+	};
 
 } // zipios namespace
 

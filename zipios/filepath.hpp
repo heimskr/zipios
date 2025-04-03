@@ -38,52 +38,46 @@
 #include <ctime>
 #include <string>
 
+namespace zipios {
 
-namespace zipios
-{
+	class FilePath {
+	public:
+		FilePath(std::string const &path = std::string());
 
+		operator std::string() const;
+		FilePath &operator=(std::string const &path);
+		FilePath operator+(FilePath const &name) const;
+		bool operator==(char const *rhs) const;
+		friend bool operator==(char const *lhs, FilePath const &rhs);
+		bool operator==(std::string const &rhs) const;
+		friend bool operator==(std::string const &lhs, FilePath const &rhs);
+		bool operator==(FilePath const &rhs) const;
+		// TBD: add all the other comparison operators for completeness
+		void clear();
+		std::string filename() const;
+		size_t length() const;
+		size_t size() const;
+		bool empty() const;
+		bool exists() const;
+		bool isRegular() const;
+		bool isDirectory() const;
+		bool isCharSpecial() const;
+		bool isBlockSpecial() const;
+		bool isSocket() const;
+		bool isFifo() const;
+		size_t fileSize() const;
+		std::time_t lastModificationTime() const;
 
-class FilePath
-{
-public:
-                        FilePath(std::string const & path = std::string());
+	private:
+		void check() const;
 
-                        operator std::string () const;
-    FilePath &          operator = (std::string const & path);
-    FilePath            operator + (FilePath const & name) const;
-    bool                operator == (char const * rhs) const;
-    friend bool         operator == (char const * lhs, FilePath const & rhs);
-    bool                operator == (std::string const & rhs) const;
-    friend bool         operator == (std::string const & lhs, FilePath const & rhs);
-    bool                operator == (FilePath const & rhs) const;
-    // TBD: add all the other comparison operators for completeness
-    void                clear();
-    std::string         filename() const;
-    size_t              length() const;
-    size_t              size() const;
-    bool                empty() const;
-    bool                exists() const;
-    bool                isRegular() const;
-    bool                isDirectory() const;
-    bool                isCharSpecial() const;
-    bool                isBlockSpecial() const;
-    bool                isSocket() const;
-    bool                isFifo() const;
-    size_t              fileSize() const;
-    std::time_t         lastModificationTime() const;
+		std::string m_path = std::string();
+		mutable os_stat_t m_stat = {};
+		mutable bool m_checked = false;
+		mutable bool m_exists = false;
+	};
 
-private:
-    void                check() const;
-
-    std::string         m_path = std::string();
-    mutable os_stat_t   m_stat = {};
-    mutable bool        m_checked = false;
-    mutable bool        m_exists = false;
-};
-
-
-std::ostream & operator << (std::ostream & os, FilePath const & path);
-
+	std::ostream &operator<<(std::ostream &os, FilePath const &path);
 
 } // zipios namespace
 

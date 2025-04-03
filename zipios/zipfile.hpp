@@ -39,37 +39,27 @@
 #include "zipios/filecollection.hpp"
 #include "zipios/virtualseeker.hpp"
 
+namespace zipios {
 
-namespace zipios
-{
+	class ZipFile : public FileCollection {
+	public:
+		static pointer_t openEmbeddedZipFile(std::string const &filename);
 
+		ZipFile();
+		ZipFile(std::string const &filename, offset_t s_off = 0, offset_t e_off = 0);
+		ZipFile(std::istream &is, offset_t s_off = 0, offset_t e_off = 0);
+		virtual pointer_t clone() const override;
+		virtual ~ZipFile() override;
 
-class ZipFile : public FileCollection
-{
-public:
-    static pointer_t            openEmbeddedZipFile(std::string const & filename);
+		virtual stream_pointer_t getInputStream(std::string const &entry_name, MatchPath matchpath = MatchPath::MATCH) override;
+		static void saveCollectionToArchive(std::ostream &os, FileCollection &collection, std::string const &zip_comment = std::string());
 
-                                ZipFile();
-                                ZipFile(std::string const & filename, offset_t s_off = 0, offset_t e_off = 0);
-                                ZipFile(std::istream & is, offset_t s_off = 0, offset_t e_off = 0);
-    virtual pointer_t           clone() const override;
-    virtual                     ~ZipFile() override;
+	private:
+		void init(std::istream &is);
+		std::istream *is_ptr = nullptr;
 
-    virtual stream_pointer_t    getInputStream(
-                                          std::string const & entry_name
-                                        , MatchPath matchpath = MatchPath::MATCH) override;
-    static void                 saveCollectionToArchive(
-                                          std::ostream & os
-                                        , FileCollection & collection
-                                        , std::string const & zip_comment = std::string());
-
-private:
-    void                        init(std::istream & is);
-    std::istream *is_ptr = nullptr;
-
-    VirtualSeeker               m_vs = VirtualSeeker();
-};
-
+		VirtualSeeker m_vs = VirtualSeeker();
+	};
 
 } // zipios namespace
 

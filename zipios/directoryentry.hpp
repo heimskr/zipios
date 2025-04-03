@@ -35,22 +35,17 @@
 
 #include "zipios/fileentry.hpp"
 
+namespace zipios {
 
-namespace zipios
-{
+	class DirectoryEntry : public FileEntry {
+	public:
+		DirectoryEntry(FilePath const &filename, std::string const &comment = std::string());
+		virtual pointer_t clone() const override;
+		virtual ~DirectoryEntry() override;
 
-
-class DirectoryEntry : public FileEntry
-{
-public:
-                            DirectoryEntry(FilePath const & filename, std::string const & comment = std::string());
-    virtual pointer_t       clone() const override;
-    virtual                 ~DirectoryEntry() override;
-
-    virtual bool            isEqual(FileEntry const & file_entry) const override;
-    uint32_t                computeCRC32() const;
-};
-
+		virtual bool isEqual(FileEntry const &file_entry) const override;
+		uint32_t computeCRC32() const;
+	};
 
 } // zipios namespace
 

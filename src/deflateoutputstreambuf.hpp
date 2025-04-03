@@ -40,42 +40,38 @@
 
 #include <zlib.h>
 
+namespace zipios {
 
-namespace zipios
-{
+	class DeflateOutputStreambuf : public FilterOutputStreambuf {
+	public:
+		DeflateOutputStreambuf(std::streambuf *outbuf);
+		DeflateOutputStreambuf(DeflateOutputStreambuf const &rhs) = delete;
+		virtual ~DeflateOutputStreambuf();
 
-class DeflateOutputStreambuf : public FilterOutputStreambuf
-{
-public:
-                            DeflateOutputStreambuf(std::streambuf * outbuf);
-                            DeflateOutputStreambuf(DeflateOutputStreambuf const & rhs) = delete;
-    virtual                 ~DeflateOutputStreambuf();
+		DeflateOutputStreambuf &operator=(DeflateOutputStreambuf const &rhs) = delete;
 
-    DeflateOutputStreambuf & operator = (DeflateOutputStreambuf const & rhs) = delete;
+		bool init(FileEntry::CompressionLevel compression_level);
+		void closeStream();
+		uint32_t getCrc32() const;
+		size_t getSize() const;
 
-    bool                    init(FileEntry::CompressionLevel compression_level);
-    void                    closeStream();
-    uint32_t                getCrc32() const;
-    size_t                  getSize() const;
+	protected:
+		virtual int overflow(int c = EOF);
+		virtual int sync();
 
-protected:
-    virtual int             overflow(int c = EOF);
-    virtual int             sync();
+		uint32_t m_overflown_bytes = 0;
+		std::vector<char> m_invec = std::vector<char>();
+		uint32_t m_crc32 = 0;
 
-    uint32_t                m_overflown_bytes = 0;
-    std::vector<char>       m_invec = std::vector<char>();
-    uint32_t                m_crc32 = 0;
+	private:
+		void endDeflation();
+		void flushOutvec();
 
-private:
-    void                    endDeflation();
-    void                    flushOutvec();
+		z_stream m_zs = z_stream();
+		bool m_zs_initialized = false;
 
-    z_stream                m_zs = z_stream();
-    bool                    m_zs_initialized = false;
-
-    std::vector<char>       m_outvec = std::vector<char>();
-};
-
+		std::vector<char> m_outvec = std::vector<char>();
+	};
 
 } // zipios namespace
 

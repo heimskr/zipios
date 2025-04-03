@@ -33,36 +33,31 @@
 
 #include "deflateoutputstreambuf.hpp"
 
+namespace zipios {
 
-namespace zipios
-{
+	class GZIPOutputStreambuf : public DeflateOutputStreambuf {
+	public:
+		GZIPOutputStreambuf(std::streambuf *outbuf, FileEntry::CompressionLevel compression_level);
+		virtual ~GZIPOutputStreambuf() override;
 
+		void setFilename(std::string const &filename);
+		void setComment(std::string const &comment);
+		void close();
+		void finish();
 
-class GZIPOutputStreambuf : public DeflateOutputStreambuf
-{
-public:
-                  GZIPOutputStreambuf(std::streambuf * outbuf, FileEntry::CompressionLevel compression_level);
-    virtual       ~GZIPOutputStreambuf() override;
+	protected:
+		virtual int overflow(int c = EOF) override;
+		virtual int sync() override;
 
-    void          setFilename(std::string const & filename);
-    void          setComment(std::string const & comment);
-    void          close();
-    void          finish();
+	private:
+		void writeHeader();
+		void writeTrailer();
+		void writeInt(uint32_t i);
 
-protected:
-    virtual int   overflow(int c = EOF) override;
-    virtual int   sync() override;
-
-private:
-    void          writeHeader();
-    void          writeTrailer();
-    void          writeInt(uint32_t i);
-
-    std::string   m_filename = std::string();
-    std::string   m_comment = std::string();
-    bool          m_open = false;
-};
-
+		std::string m_filename = std::string();
+		std::string m_comment = std::string();
+		bool m_open = false;
+	};
 
 } // zipios namespace
 

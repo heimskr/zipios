@@ -32,24 +32,19 @@
 
 #include <iostream>
 
+namespace zipios {
 
-namespace zipios
-{
+	class FilterOutputStreambuf : public std::streambuf {
+	public:
+		FilterOutputStreambuf(std::streambuf *outbuf);
+		FilterOutputStreambuf(FilterOutputStreambuf const &rhs) = delete;
+		virtual ~FilterOutputStreambuf();
 
+		FilterOutputStreambuf &operator=(FilterOutputStreambuf const &rhs) = delete;
 
-class FilterOutputStreambuf : public std::streambuf
-{
-public:
-                                    FilterOutputStreambuf(std::streambuf * outbuf);
-                                    FilterOutputStreambuf(FilterOutputStreambuf const & rhs) = delete;
-    virtual                         ~FilterOutputStreambuf();
-
-    FilterOutputStreambuf &         operator = (FilterOutputStreambuf const & rhs) = delete;
-
-protected:
-    std::streambuf *                m_outbuf = nullptr;
-};
-
+	protected:
+		std::streambuf *m_outbuf = nullptr;
+	};
 
 } // zipios namespace
 

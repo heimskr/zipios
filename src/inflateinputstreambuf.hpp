@@ -39,36 +39,31 @@
 
 #include <zlib.h>
 
+namespace zipios {
 
-namespace zipios
-{
+	class InflateInputStreambuf : public FilterInputStreambuf {
+	public:
+		InflateInputStreambuf(std::streambuf *inbuf, offset_t s_pos = -1);
+		InflateInputStreambuf(InflateInputStreambuf const &rhs) = delete;
+		virtual ~InflateInputStreambuf();
 
+		InflateInputStreambuf &operator=(InflateInputStreambuf const &rhs) = delete;
 
-class InflateInputStreambuf : public FilterInputStreambuf
-{
-public:
-                            InflateInputStreambuf(std::streambuf * inbuf, offset_t s_pos = -1);
-                            InflateInputStreambuf(InflateInputStreambuf const & rhs) = delete;
-    virtual                 ~InflateInputStreambuf();
+		bool reset(offset_t stream_position = -1);
 
-    InflateInputStreambuf &  operator = (InflateInputStreambuf const & rhs) = delete;
+	protected:
+		virtual std::streambuf::int_type underflow() override;
 
-    bool                    reset(offset_t stream_position = -1);
+		/** \FIXME Consider design?
+		 */
+		std::vector<char> m_outvec = std::vector<char>();
 
-protected:
-    virtual std::streambuf::int_type             underflow() override;
+	private:
+		std::vector<char> m_invec = std::vector<char>();
 
-    /** \FIXME Consider design?
-     */
-    std::vector<char>       m_outvec = std::vector<char>();
-
-private:
-    std::vector<char>       m_invec = std::vector<char>();
-
-    z_stream                m_zs = z_stream();
-    bool                    m_zs_initialized = false;
-};
-
+		z_stream m_zs = z_stream();
+		bool m_zs_initialized = false;
+	};
 
 } // namespace
 

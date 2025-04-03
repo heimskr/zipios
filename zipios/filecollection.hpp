@@ -32,52 +32,42 @@
 
 #include "zipios/fileentry.hpp"
 
+namespace zipios {
 
-namespace zipios
-{
+	class FileCollection {
+	public:
+		typedef std::shared_ptr<FileCollection> pointer_t;
+		typedef std::vector<pointer_t> vector_t;
+		typedef std::shared_ptr<std::istream> stream_pointer_t;
 
+		enum class MatchPath : uint32_t { IGNORE, MATCH };
 
-class FileCollection
-{
-public:
-    typedef std::shared_ptr<FileCollection> pointer_t;
-    typedef std::vector<pointer_t>          vector_t;
-    typedef std::shared_ptr<std::istream>   stream_pointer_t;
+		FileCollection(std::string const &filename = std::string());
+		FileCollection(FileCollection const &rhs);
+		virtual pointer_t clone() const = 0;
+		virtual ~FileCollection();
 
-    enum class MatchPath : uint32_t
-    {
-        IGNORE,
-        MATCH
-    };
+		FileCollection &operator=(FileCollection const &rhs);
 
-                                    FileCollection(std::string const & filename = std::string());
-                                    FileCollection(FileCollection const & rhs);
-    virtual pointer_t               clone() const = 0;
-    virtual                         ~FileCollection();
+		virtual void addEntry(FileEntry const &entry);
+		virtual void close();
+		virtual FileEntry::vector_t entries() const;
+		virtual FileEntry::pointer_t getEntry(std::string const &name, MatchPath matchpath = MatchPath::MATCH) const;
+		virtual stream_pointer_t getInputStream(std::string const &entry_name, MatchPath matchpath = MatchPath::MATCH) = 0;
+		virtual std::string getName() const;
+		virtual size_t size() const;
+		bool isValid() const;
+		virtual void mustBeValid() const;
+		void setMethod(size_t limit, StorageMethod small_storage_method, StorageMethod large_storage_method);
+		void setLevel(size_t limit, FileEntry::CompressionLevel small_compression_level, FileEntry::CompressionLevel large_compression_level);
 
-    FileCollection &                operator = (FileCollection const & rhs);
+	protected:
+		std::string m_filename = std::string();
+		FileEntry::vector_t m_entries = FileEntry::vector_t();
+		bool m_valid = true;
+	};
 
-    virtual void                    addEntry(FileEntry const & entry);
-    virtual void                    close();
-    virtual FileEntry::vector_t     entries() const;
-    virtual FileEntry::pointer_t    getEntry(std::string const & name, MatchPath matchpath = MatchPath::MATCH) const;
-    virtual stream_pointer_t        getInputStream(std::string const & entry_name, MatchPath matchpath = MatchPath::MATCH) = 0;
-    virtual std::string             getName() const;
-    virtual size_t                  size() const;
-    bool                            isValid() const;
-    virtual void                    mustBeValid() const;
-    void                            setMethod(size_t limit, StorageMethod small_storage_method, StorageMethod large_storage_method);
-    void                            setLevel(size_t limit, FileEntry::CompressionLevel small_compression_level, FileEntry::CompressionLevel large_compression_level);
-
-protected:
-    std::string                     m_filename = std::string();
-    FileEntry::vector_t             m_entries = FileEntry::vector_t();
-    bool                            m_valid = true;
-};
-
-
-std::ostream & operator << (std::ostream & os, FileCollection const & collection);
-
+	std::ostream &operator<<(std::ostream &os, FileCollection const &collection);
 
 } // zipios namespace
 

@@ -30,51 +30,41 @@
 
 #include "zipios/zipiosexceptions.hpp"
 
+namespace zipios {
 
-namespace zipios
-{
+	/** \class FilterOutputStreambuf
+	 * \brief A base class to develop output stream filters.
+	 *
+	 * An output stream buffer filter is an std::streambuf that filters the
+	 * output it gets from the std::streambuf it is attached to.
+	 *
+	 * FilterOutputStreambuf is a base class to derive input streambuf
+	 * filters from.
+	 */
 
+	/** \brief Initialize your filter output stream buffer.
+	 *
+	 * This constructor initializes the filter by saving the outbuf buffer
+	 * pointer in it.
+	 *
+	 * \param[in] outbuf  The streambuf to pass the filtered data on to.
+	 */
+	FilterOutputStreambuf::FilterOutputStreambuf(std::streambuf *outbuf) : m_outbuf(outbuf) {
+		if (m_outbuf == nullptr) {
+			throw InvalidStateException("FilterOutputStreambuf was called with a null streambuf pointer");
+		}
+	}
 
-/** \class FilterOutputStreambuf
- * \brief A base class to develop output stream filters.
- *
- * An output stream buffer filter is an std::streambuf that filters the
- * output it gets from the std::streambuf it is attached to.
- *
- * FilterOutputStreambuf is a base class to derive input streambuf
- * filters from.
- */
-
-
-/** \brief Initialize your filter output stream buffer.
- *
- * This constructor initializes the filter by saving the outbuf buffer
- * pointer in it.
- *
- * \param[in] outbuf  The streambuf to pass the filtered data on to.
- */
-FilterOutputStreambuf::FilterOutputStreambuf(std::streambuf * outbuf)
-    : m_outbuf(outbuf)
-{
-    if(m_outbuf == nullptr)
-    {
-        throw InvalidStateException("FilterOutputStreambuf was called with a null streambuf pointer");
-    }
-}
-
-
-/** \brief Clean up the object.
- *
- * At this time the destructor does nothing.
- *
- * The former version would eventually delete the m_outbuf pointer. However,
- * here we have decided that this class did not own that pointer and thus
- * should not have such permissions.
- */
-FilterOutputStreambuf::~FilterOutputStreambuf()
-{
-}
-
+	/** \brief Clean up the object.
+	 *
+	 * At this time the destructor does nothing.
+	 *
+	 * The former version would eventually delete the m_outbuf pointer. However,
+	 * here we have decided that this class did not own that pointer and thus
+	 * should not have such permissions.
+	 */
+	FilterOutputStreambuf::~FilterOutputStreambuf() {
+	}
 
 } // zipios namespace
 
