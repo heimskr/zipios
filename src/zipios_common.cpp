@@ -99,7 +99,7 @@ void zipRead(std::istream & is, uint32_t & value)
 
 void zipRead(std::istream & is, uint16_t & value)
 {
-    unsigned char buf[sizeof(value)];
+    alignas(uint16_t) unsigned char buf[sizeof(value)];
 
     if(!is.read(reinterpret_cast<char *>(buf), sizeof(value)))
     {
@@ -110,9 +110,13 @@ void zipRead(std::istream & is, uint16_t & value)
         throw IOException("EOF or an I/O error while reading zip archive data from file."); // LCOV_EXCL_LINE
     }
 
-    // zip data is always in little endian
-    value = (buf[0] <<  0)
-          | (buf[1] <<  8);
+    if constexpr (std::endian::native == std::endian::little) {
+        value = *reinterpret_cast<const uint16_t *>(&buf);
+    } else {
+        // zip data is always in little endian
+        value = (buf[0] <<  0)
+              | (buf[1] <<  8);
+    }
 }
 
 
