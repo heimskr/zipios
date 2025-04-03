@@ -27,6 +27,10 @@
  * system.
  */
 
+#if !defined(ZIPIOS_WINDOWS) && (defined(_WINDOWS) || defined(WIN32) || defined(_WIN32) || defined(__WIN32) || defined(__MINGW32__))
+#define ZIPIOS_WINDOWS
+#endif
+
 #include "zipios/filepath.hpp"
 
 #include "zipios_common.hpp"
@@ -404,7 +408,11 @@ namespace zipios {
 	 */
 	bool FilePath::isSocket() const {
 		check();
+#ifdef ZIPIOS_WINDOWS
+		return false;
+#else
 		return m_exists && S_ISSOCK(m_stat.st_mode);
+#endif
 	}
 
 	/** \brief Check whether the file is a pipe.
