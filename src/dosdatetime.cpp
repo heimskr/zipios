@@ -32,6 +32,10 @@
  * \sa https://docs.microsoft.com/en-us/windows/desktop/api/winbase/nf-winbase-dosdatetimetofiletime
  */
 
+#if !defined(ZIPIOS_WINDOWS) && (defined(_WINDOWS) || defined(WIN32) || defined(_WIN32) || defined(__WIN32) || defined(__MINGW32__))
+#define ZIPIOS_WINDOWS
+#endif
+
 #include "zipios/dosdatetime.hpp"
 
 #include "zipios/zipiosexceptions.hpp"
