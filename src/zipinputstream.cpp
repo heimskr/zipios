@@ -70,10 +70,10 @@ ZipInputStream::ZipInputStream(std::string const & filename, std::streampos pos)
 }
 
 
-ZipInputStream::ZipInputStream(std::istream & is)
+ZipInputStream::ZipInputStream(std::istream & is, std::streampos pos)
     : std::istream(nullptr)
     , m_ifs_ref(is)
-    , m_izf(std::make_unique<ZipInputStreambuf>(m_ifs_ref.rdbuf(), 0))
+    , m_izf(std::make_unique<ZipInputStreambuf>(m_ifs_ref.rdbuf(), pos))
 {
     // properly initialize the stream with the newly allocated buffer
     init(m_izf.get());

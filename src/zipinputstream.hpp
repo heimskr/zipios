@@ -44,7 +44,7 @@ class ZipInputStream : public std::istream
 {
 public:
                                         ZipInputStream(std::string const & filename, std::streampos pos = 0);
-                                        ZipInputStream(std::istream & is);
+                                        ZipInputStream(std::istream & is, std::streampos pos = 0);
                                         ZipInputStream(ZipInputStream const & rhs) = delete;
     virtual                             ~ZipInputStream() override;
 

@@ -408,6 +408,7 @@ ZipFile::ZipFile(std::istream & is, offset_t s_off, offset_t e_off)
  */
 void ZipFile::init(std::istream & is)
 {
+    is_ptr = &is;
     // Find and read the End of Central Directory.
     ZipEndOfCentralDirectory eocd;
     {
@@ -446,7 +447,7 @@ void ZipFile::init(std::istream & is)
     for(size_t entry_num(0); entry_num < max_entry; ++entry_num)
     {
         m_entries[entry_num] = std::make_shared<ZipCentralDirectoryEntry>();
-        m_entries[entry_num].get()->read(is);
+        m_entries[entry_num]->read(is);
     }
 
     // Consistency check #1:
@@ -550,15 +551,12 @@ ZipFile::stream_pointer_t ZipFile::getInputStream(std::string const & entry_name
     //
     FileEntry::pointer_t entry(getEntry(entry_name, matchpath));
     StreamEntry::pointer_t stream(std::dynamic_pointer_cast<StreamEntry>(entry));
-    if(stream != nullptr)
-    {
-        stream_pointer_t zis(std::make_shared<ZipInputStream>(stream->getStream()));
-        return zis;
-    }
-    else if(entry != nullptr)
-    {
-        stream_pointer_t zis(std::make_shared<ZipInputStream>(m_filename, entry->getEntryOffset() + m_vs.startOffset()));
-        return zis;
+    if (stream != nullptr) {
+        return std::make_shared<ZipInputStream>(stream->getStream());
+    } else if (is_ptr != nullptr) {
+        return std::make_shared<ZipInputStream>(*is_ptr, entry->getEntryOffset() + m_vs.startOffset());
+    } else if (entry != nullptr) {
+        return std::make_shared<ZipInputStream>(m_filename, entry->getEntryOffset() + m_vs.startOffset());
     }
 
     // no entry with that name (and match) available

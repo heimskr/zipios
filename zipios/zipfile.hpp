@@ -65,6 +65,7 @@ public:
 
 private:
     void                        init(std::istream & is);
+    std::istream *is_ptr = nullptr;
 
     VirtualSeeker               m_vs = VirtualSeeker();
 };
