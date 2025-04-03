@@ -31,6 +31,7 @@
 
 #include "zipios/zipiosexceptions.hpp"
 
+#include <bit>
 
 namespace zipios
 {
@@ -73,7 +74,7 @@ char const g_separator = '/';
 
 void zipRead(std::istream & is, uint32_t & value)
 {
-    unsigned char buf[sizeof(value)];
+    alignas(uint32_t) unsigned char buf[sizeof(value)];
 
     if(!is.read(reinterpret_cast<char *>(buf), sizeof(value)))
     {
@@ -84,11 +85,15 @@ void zipRead(std::istream & is, uint32_t & value)
         throw IOException("EOF or an I/O error while reading zip archive data from file."); // LCOV_EXCL_LINE
     }
 
-    // zip data is always in little endian
-    value = (buf[0] <<  0)
-          | (buf[1] <<  8)
-          | (buf[2] << 16)
-          | (buf[3] << 24);
+    if constexpr (std::endian::native == std::endian::little) {
+        value = *reinterpret_cast<const uint32_t *>(&buf);
+    } else {
+        // zip data is always in little endian
+        value = (buf[0] <<  0)
+              | (buf[1] <<  8)
+              | (buf[2] << 16)
+              | (buf[3] << 24);
+    }
 }
 
 
